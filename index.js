@@ -2,8 +2,8 @@
 TASK 1 🚀
 // in your own words explain what a closure is below in comments and then write an example of a closure. Try to make this explaination simple enough to explain to a younger sibling. */
 
-
-
+/*Its like toys in a doll house all the toys inside can play both inside and outside the house but the toys outside cant come in and play!
+*/
 
 
 
@@ -19,7 +19,7 @@ function counterMaker() {
      return count++;
     }
   }
-
+//count is initialized with let because it is block scope  as well is const but const is immutable unlike var which is //function scoped will reach outside of the function
 
 
 
@@ -30,10 +30,10 @@ TASK 3 🚀
 * The for principles of "this";
 * in your own words. explain the four principle for the "this" keyword below.
 *
-* 1. 
-* 2. 
-* 3. 
-* 4. 
+* 1. If it dosent fall in with any oter rule then "this" will default to window unless using strict mode
+* 2. When the fucntion is invoked, look to the left of the dot that is what "this" refers to only to object w/ methods
+* 3. using the 'new keyword contructs a new object and 'this points to it
+* 4. when using call or apply method "this" is clearly defined
 *
 * write out a code example of each explanation above
 */
@@ -41,18 +41,62 @@ TASK 3 🚀
 // Principle 1
 
 // code example for Window Binding
+   'use strict';
+
+   function ghost(){
+     console.log(this.boo);
+   }
+   const boo = 'boo'
+   ghost();
 
 // Principle 2
 
 // code example for Implicit Binding
+const myGhost = {
+   name: 'Casper',
+   boo: 'booBoo',
+   ghost: function(){
+    console.log(this.boo);
+    }
+   }
+  
+   myGhost.ghost();
+
 
 // Principle 3
 
 // code example for New Binding
+function Ghost(saying, name){
+  this.phrase = saying;
+  this.name = name;
+
+}
+const mySpook = new Ghost ('Guess who is coming to dinner', 'Beetlejuice');
+
+console.log(mySpook.phrase);
+console.log(mySpook.name);
+
+
 
 // Principle 4
 
 // code example for Explicit Binding
+  function jerk(){
+    console.log(this.jerk);
+  }
+  
+    const myJerk = {
+      name : 'Finn',
+      jerk: 'Shelly',
+    }
+  
+  const otherJerk = {
+    name : 'Fatso',
+    jerk: 'MeanBoo',
+  }
+  
+  jerk.call(myJerk);
+  jerk.call(otherJerk);
 
 
 
@@ -76,6 +120,16 @@ TASK 4 🚀
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
+function GameObject(attrs){
+  this.createdAt = attrs.createdAt;
+  this.name = attrs.name;
+  this.dimensions = attrs.dimensions
+   
+}
+GameObject.prototype.destroy =  function(){
+  return `${this.name} was removed from the game`;
+}
+
 
 /*
   === CharacterStats ===
@@ -83,17 +137,36 @@ TASK 4 🚀
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+function CharacterStats(attrs){
+  GameObject.call(this,attrs);
+  this.healthPoints = attrs.healthPoints;
 
+}
+CharacterStats.prototype = Object.create(GameObject.prototype);
+CharacterStats.prototype.takeDamage = function(){
+  return `${this.name} took damage.`;
+}
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
   * team
   * weapons
   * language
-  * greet() // prototype method -> returns the string '<object name> offers a greeting in <object language>.'
+  * greet() // prototype method -> returns the string ''<object name> took damage.''
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
- 
+function Humanoid(attrs){
+  CharacterStats.call(this,attrs);
+  this.team = attrs.team;
+  this.weapons = attrs.weapons;
+  this.language = attrs.language;
+
+}
+Humanoid.prototype = Object.create(CharacterStats.prototype); 
+Humanoid.prototype.greet = function (){
+  return `${this.name} took damage.`;
+
+}
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -102,7 +175,7 @@ TASK 4 🚀
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
+
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -160,7 +233,7 @@ TASK 4 🚀
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
+
 
 
 
@@ -170,4 +243,54 @@ TASK 4 🚀
 /*
 TASK 5 🚀
 // convert the constructor functions above to class syntax copy and paste the objects and console logs below the class syntax to test if your code is working
- */
+*/
+  /*function GameObject(attrs){
+    this.createdAt = attrs.createdAt;
+    this.name = attrs.name;
+    this.dimensions = attrs.dimensions;
+
+    function CharacterStats(attrs){
+  GameObject.call(this,attrs);
+  this.healthPoints = attrs.healthPoints;
+
+
+    
+
+    function Humanoid(attrs){
+      CharacterStats.call(this,attrs);
+      this.team = attrs.team;
+      this.weapons = attrs.weapons;
+      this.language = attrs.language;
+    */
+     class GameObject{
+        constructor(attrs){
+          this.createdAt = attrs.createdAt;
+          this.name = attrs.name;
+          this.dimensions = attrs.dimensions;
+        }
+      speak(){
+         return `${this.name} was removed from the game`;
+      }
+      }
+      
+      class CharacterStats extends GameObject{
+        constructor(attrs){
+          super(attrs)
+          this.healthPoints = attrs.healthPoints;
+        }
+        speak(){
+          return `${this.name} took damage.`;
+        }
+      }
+
+      class Humanoid extends CharacterStats{
+        constructor(attrs){
+          super(attrs)
+          this.team = attrs.team;
+          this.weapons = attrs.weapons;
+          this.language = attrs.language;
+        }
+        speak(){
+          return `${this.name} took damage.`
+        }
+      }
